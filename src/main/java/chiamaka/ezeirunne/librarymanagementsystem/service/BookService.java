@@ -1,2 +1,20 @@
-package chiamaka.ezeirunne.librarymanagementsystem.service;public interface BookService {
+package chiamaka.ezeirunne.librarymanagementsystem.service;
+
+import chiamaka.ezeirunne.librarymanagementsystem.dto.BookRequest;
+import chiamaka.ezeirunne.librarymanagementsystem.dto.BookResponse;
+import chiamaka.ezeirunne.librarymanagementsystem.exception.BookServiceException;
+
+import java.util.List;
+
+public interface BookService {
+
+    void registerBook(BookRequest bookRequest) throws BookServiceException;
+
+    void updateBook(Long id, BookRequest bookRequest) throws BookServiceException;
+
+    List<BookResponse> getAllBooks();
+
+    BookResponse getBookById(Long id) throws BookServiceException;
+
+    void deleteBook(Long id) throws BookServiceException;
 }

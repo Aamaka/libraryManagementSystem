@@ -1,32 +1,41 @@
-package chiamaka.ezeirunne.librarymanagementsystem.data.models;
+package chiamaka.ezeirunne.librarymanagementsystem.data.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String title;
 
-    private BigDecimal price;
+    @Column(nullable = false)
     private String author;
+
     private int quantityOfBooksAvailable;
+
     private String isbn;
+
     private String datePublished;
+
     @Enumerated(EnumType.STRING)
     private Category category;
-    private String createdDate;
-    private String modifiedDate;
+
+    private LocalDateTime registeredDate;
+
+    private LocalDateTime modifiedDate;
 
 }
 

@@ -1,6 +1,5 @@
 package chiamaka.ezeirunne.librarymanagementsystem.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PatronRequestDto {
+public class PatronRequest {
 
     private String name;
     private String email;

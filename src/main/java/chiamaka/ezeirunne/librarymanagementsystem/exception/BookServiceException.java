@@ -1,2 +1,6 @@
-package chiamaka.ezeirunne.librarymanagementsystem.exception;public class BookServiceException {
+package chiamaka.ezeirunne.librarymanagementsystem.exception;
+
+public class BookServiceException extends Exception {
+    public BookServiceException(String message) {
+    }
 }
