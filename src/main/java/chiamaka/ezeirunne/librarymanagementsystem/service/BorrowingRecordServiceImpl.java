@@ -9,6 +9,7 @@ import chiamaka.ezeirunne.librarymanagementsystem.data.repository.PatronReposito
 import chiamaka.ezeirunne.librarymanagementsystem.exception.BookServiceException;
 import chiamaka.ezeirunne.librarymanagementsystem.exception.BorrowingRecordServiceException;
 import chiamaka.ezeirunne.librarymanagementsystem.exception.PatronServiceException;
+import jakarta.persistence.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +30,13 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
     @Override
     @Transactional
-    public void borrowBook(Long bookId, Long patronId) throws BookServiceException, PatronServiceException {
+    public void borrowBook(Long bookId, Long patronId) throws BookServiceException, PatronServiceException, BorrowingRecordServiceException {
         Book book = getBook(bookId);
 
         Patron patron = getPatron(patronId);
+        if(borrowingRecordRepository.existsByBookAndPatronAndReturnDateIsNull(book, patron)){
+            throw new BorrowingRecordServiceException("You are yet to return : " + book.getTitle());
+        }
 
         if (book.getQuantityOfBooksAvailable() < 1) {
             throw new BookServiceException("Book is not available for borrowing: " + book.getTitle());
@@ -45,6 +49,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
 
         book.setQuantityOfBooksAvailable(book.getQuantityOfBooksAvailable() - 1 );
+        book.setModifiedDate(LocalDateTime.now());
         bookRepository.save(book);
 
         borrowingRecordRepository.save(borrowingRecord);
@@ -68,15 +73,21 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
         Patron patron = getPatron(patronId);
 
-        BorrowingRecord borrowingRecord = borrowingRecordRepository.findByBookAndPatronAndReturnDateIsNull(book, patron)
-                .orElseThrow(() -> new BorrowingRecordServiceException("Borrowing record not found"));
+        BorrowingRecord borrowingRecord = getBorrowingRecord(book, patron);
 
         borrowingRecord.setReturnDate(LocalDateTime.now());
 
         book.setQuantityOfBooksAvailable(book.getQuantityOfBooksAvailable() + 1);
+        book.setModifiedDate(LocalDateTime.now());
+
         bookRepository.save(book);
 
         borrowingRecordRepository.save(borrowingRecord);
+    }
+
+    private BorrowingRecord getBorrowingRecord(Book book, Patron patron) throws BorrowingRecordServiceException {
+        return borrowingRecordRepository.findByBookAndPatronAndReturnDateIsNull(book, patron)
+                .orElseThrow(() -> new BorrowingRecordServiceException("Borrowing record not found"));
     }
 
 }

@@ -6,6 +6,7 @@ import chiamaka.ezeirunne.librarymanagementsystem.data.repository.BookRepository
 import chiamaka.ezeirunne.librarymanagementsystem.dto.BookRequest;
 import chiamaka.ezeirunne.librarymanagementsystem.dto.BookResponse;
 import chiamaka.ezeirunne.librarymanagementsystem.exception.BookServiceException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class BookServiceImpl implements  BookService {
 
     @Autowired
@@ -22,23 +24,26 @@ public class BookServiceImpl implements  BookService {
     @Override
     public void registerBook(BookRequest bookRequest) throws BookServiceException {
 
-        validateBookRequest(bookRequest);
 
-        bookRepository.save(Book.builder()
-                .title(bookRequest.getTitle())
-                .author(bookRequest.getAuthor())
-                .quantityOfBooksAvailable(Math.max(bookRequest.getQuantityOfBooksAvailable(), 0))
-                .isbn(bookRequest.getIsbn())
-                .datePublished(bookRequest.getDatePublished())
-                .category(Category.valueOf(bookRequest.getCategory()))
-                .registeredDate(LocalDateTime.now())
-                .build());
+            validateBookRequest(bookRequest);
+
+            bookRepository.save(Book.builder()
+                    .title(bookRequest.getTitle())
+                    .author(bookRequest.getAuthor())
+                    .quantityOfBooksAvailable(Math.max(bookRequest.getQuantityOfBooksAvailable(), 0))
+                    .isbn(bookRequest.getIsbn())
+                    .datePublished(bookRequest.getDatePublished())
+                    .category(Category.valueOf(bookRequest.getCategory()))
+                    .registeredDate(LocalDateTime.now())
+                    .build());
+
+
 
     }
 
     private void validateBookRequest(BookRequest bookRequest) throws BookServiceException {
         if (bookRepository.existsByTitleIsIgnoreCaseAndAuthorIgnoreCase(bookRequest.getTitle(), bookRequest.getAuthor())) {
-            throw new BookServiceException("Book with title " + bookRequest.getTitle() + "and author "+ bookRequest.getAuthor() + " already exists");
+            throw new BookServiceException("Book with title " + bookRequest.getTitle() + " and author "+ bookRequest.getAuthor() + " already exists");
         }
     }
 
@@ -111,7 +116,7 @@ public class BookServiceImpl implements  BookService {
 
     @Override
     @Transactional
-    public void deleteBook(Long id) throws BookServiceException {
+    public void deleteBookById(Long id) throws BookServiceException {
         bookRepository.delete(getBook(id));
     }
 

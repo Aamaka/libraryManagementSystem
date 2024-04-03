@@ -12,7 +12,7 @@ public interface PatronService {
     void updatePatron(Long id, PatronRequest patronRequest) throws PatronServiceException;
     List<PatronResponse> getAllPatrons();
     PatronResponse getPatronById(Long id) throws PatronServiceException;
-    void deletePatron(Long id) throws PatronServiceException;
+    void deletePatronById(Long id) throws PatronServiceException;
 
 
 }

@@ -19,11 +19,11 @@ public class BorrowingRecord {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Book book;
 
     @ManyToOne
-    @JoinColumn(name = "patron_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Patron patron;
 
     private LocalDateTime borrowDate;

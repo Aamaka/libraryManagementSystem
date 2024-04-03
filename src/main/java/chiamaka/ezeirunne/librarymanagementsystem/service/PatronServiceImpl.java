@@ -103,7 +103,7 @@ public class PatronServiceImpl implements PatronService {
 
     @Override
     @Transactional
-    public void deletePatron(Long id) throws PatronServiceException {
+    public void deletePatronById(Long id) throws PatronServiceException {
         patronRepository.delete(getPatron(id));
     }
 

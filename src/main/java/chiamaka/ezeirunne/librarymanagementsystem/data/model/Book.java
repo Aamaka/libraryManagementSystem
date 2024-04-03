@@ -26,6 +26,7 @@ public class Book {
 
     private int quantityOfBooksAvailable;
 
+    @Column(length = 13)
     private String isbn;
 
     private String datePublished;
