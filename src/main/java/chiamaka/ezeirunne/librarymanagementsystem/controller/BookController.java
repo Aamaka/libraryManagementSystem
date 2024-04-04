@@ -20,15 +20,15 @@ public class BookController {
 
 
     @PostMapping
-    public ResponseEntity<?> registerBook(@RequestBody BookRequest bookRequest) throws BookServiceException {
-        bookService.registerBook(bookRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<BookResponse> registerBook(@RequestBody BookRequest bookRequest) throws BookServiceException {
+        BookResponse bookResponse = bookService.registerBook(bookRequest);
+        return new ResponseEntity<>(bookResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody BookRequest bookRequest) throws BookServiceException {
-         bookService.updateBook(id, bookRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BookResponse> updateBook(@PathVariable Long id, @RequestBody BookRequest bookRequest) throws BookServiceException {
+        BookResponse bookResponse = bookService.updateBook(id, bookRequest);
+        return new ResponseEntity<>(bookResponse, HttpStatus.OK);
     }
 
     @GetMapping

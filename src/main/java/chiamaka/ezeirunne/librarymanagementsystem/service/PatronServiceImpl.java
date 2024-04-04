@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatronServiceImpl implements PatronService {
@@ -21,25 +21,49 @@ public class PatronServiceImpl implements PatronService {
 
     @Override
     @Transactional
-    public void registerPatron(PatronRequest patronRequestDto) throws PatronServiceException {
-        validatePatronRequest(patronRequestDto);
-
-        patronRepository.save(Patron.builder()
-                .name(patronRequestDto.getName())
+    public PatronResponse registerPatron(PatronRequest patronRequestDto) {
+        Optional<PatronResponse> response = validatePatronRequest(patronRequestDto);
+        return response.orElseGet(() -> getPatronResponse(patronRepository.save(Patron.builder()
+                .firstName(patronRequestDto.getFirstName())
+                .lastName(patronRequestDto.getLastName())
                 .email(patronRequestDto.getEmail())
                 .phoneNumber(patronRequestDto.getPhoneNumber())
                 .gender(Gender.valueOf(patronRequestDto.getGender()))
-                .registeredDate(LocalDateTime.now())
-                .build());
+                .build())));
+
     }
+
+    private Optional<PatronResponse> validatePatronRequest(PatronRequest patronRequest) {
+        String email = patronRequest.getEmail();
+        String phoneNumber = patronRequest.getPhoneNumber();
+
+        if (patronRepository.existsByEmail(email)) {
+            return Optional.of(PatronResponse.builder()
+                    .message("Patron with email " + email + " already exists")
+                    .build());
+        }
+
+        if (patronRepository.existsByPhoneNumber(phoneNumber)) {
+            return Optional.of(PatronResponse.builder()
+                    .message("Patron with phone number " + phoneNumber + " already exists")
+                    .build());
+        }
+
+        return Optional.empty();
+    }
+
 
     @Override
     @Transactional
-    public void updatePatron(Long id, PatronRequest patronRequest) throws PatronServiceException {
+    public PatronResponse updatePatron(Long id, PatronRequest patronRequest) throws PatronServiceException {
         Patron existingPatron = getPatron(id);
 
-        if(patronRequest.getName() != null){
-            existingPatron.setName(patronRequest.getName());
+        if(patronRequest.getFirstName() != null){
+            existingPatron.setFirstName(patronRequest.getFirstName());
+        }
+
+        if(patronRequest.getLastName() != null){
+            existingPatron.setLastName(patronRequest.getLastName());
         }
 
         if(patronRequest.getEmail() != null && !patronRepository.existsByEmail(patronRequest.getEmail())){
@@ -54,28 +78,14 @@ public class PatronServiceImpl implements PatronService {
             existingPatron.setGender(Gender.valueOf(patronRequest.getGender()));
         }
 
-        existingPatron.setModifiedDate(LocalDateTime.now());
-
         patronRepository.save(existingPatron);
-    }
 
-    private void validatePatronRequest(PatronRequest patronRequest) throws PatronServiceException {
-        String email = patronRequest.getEmail();
-        String phoneNumber = patronRequest.getPhoneNumber();
-
-        if (patronRepository.existsByEmail(patronRequest.getEmail())) {
-            throw new PatronServiceException("Patron with email " + email + " already exists");
-        }
-
-        if (patronRepository.existsByPhoneNumber(patronRequest.getPhoneNumber())) {
-            throw new PatronServiceException("Patron with phone number " + phoneNumber + " already exists");
-        }
+        return getPatronResponse(existingPatron);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PatronResponse> getAllPatrons() {
-
         List<Patron> patrons = patronRepository.findAll();
         return patrons.stream().map(this::getPatronResponse).toList();
 
@@ -84,9 +94,11 @@ public class PatronServiceImpl implements PatronService {
     private PatronResponse getPatronResponse(Patron patron) {
         return PatronResponse.builder()
                 .id(patron.getId())
-                .name(patron.getName())
+                .firstName(patron.getFirstName())
+                .lastName(patron.getLastName())
                 .email(patron.getEmail())
                 .gender(String.valueOf(patron.getGender()))
+                .phoneNumber(patron.getPhoneNumber())
                 .build();
     }
 

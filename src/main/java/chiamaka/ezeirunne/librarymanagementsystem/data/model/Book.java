@@ -1,27 +1,26 @@
 package chiamaka.ezeirunne.librarymanagementsystem.data.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Book {
+public class Book extends AbstractAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotNull
     private String title;
 
-    @Column(nullable = false)
+    @NotNull
     private String author;
 
     private int quantityOfBooksAvailable;
@@ -33,10 +32,6 @@ public class Book {
 
     @Enumerated(EnumType.STRING)
     private Category category;
-
-    private LocalDateTime registeredDate;
-
-    private LocalDateTime modifiedDate;
 
 }
 

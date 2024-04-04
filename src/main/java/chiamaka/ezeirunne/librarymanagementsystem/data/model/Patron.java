@@ -8,20 +8,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Patron {
+public class Patron extends AbstractAuditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
 
     @Column(unique = true)
     @Email(message = "Invalid email format")
@@ -31,13 +30,9 @@ public class Patron {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(unique = true, length = 11, nullable = false)
+    @Column(unique = true, length = 11)
     @NotNull(message = "Phone number cannot be null")
     private String phoneNumber;
 
     private String address;
-
-    private LocalDateTime registeredDate;
-
-    private LocalDateTime modifiedDate;
 }

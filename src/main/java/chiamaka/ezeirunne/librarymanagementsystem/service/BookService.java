@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface BookService {
 
-    void registerBook(BookRequest bookRequest) throws BookServiceException;
+    BookResponse registerBook(BookRequest bookRequest) throws BookServiceException;
 
-    void updateBook(Long id, BookRequest bookRequest) throws BookServiceException;
+    BookResponse updateBook(Long id, BookRequest bookRequest) throws BookServiceException;
 
     List<BookResponse> getAllBooks();
 

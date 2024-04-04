@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -22,34 +22,31 @@ public class BookServiceImpl implements  BookService {
     private BookRepository bookRepository;
 
     @Override
-    public void registerBook(BookRequest bookRequest) throws BookServiceException {
-
-
-            validateBookRequest(bookRequest);
-
-            bookRepository.save(Book.builder()
-                    .title(bookRequest.getTitle())
-                    .author(bookRequest.getAuthor())
-                    .quantityOfBooksAvailable(Math.max(bookRequest.getQuantityOfBooksAvailable(), 0))
-                    .isbn(bookRequest.getIsbn())
-                    .datePublished(bookRequest.getDatePublished())
-                    .category(Category.valueOf(bookRequest.getCategory()))
-                    .registeredDate(LocalDateTime.now())
-                    .build());
-
-
+    public BookResponse registerBook(BookRequest bookRequest) {
+        Optional<BookResponse> response = validateBookRequest(bookRequest);
+        return response.orElseGet(() -> getBookResponse(bookRepository.save(Book.builder()
+                .title(bookRequest.getTitle())
+                .author(bookRequest.getAuthor())
+                .quantityOfBooksAvailable(Math.max(bookRequest.getQuantityOfBooksAvailable(), 0))
+                .isbn(bookRequest.getIsbn())
+                .datePublished(bookRequest.getDatePublished())
+                .category(Category.valueOf(bookRequest.getCategory()))
+                .build())));
 
     }
 
-    private void validateBookRequest(BookRequest bookRequest) throws BookServiceException {
+    private Optional<BookResponse> validateBookRequest(BookRequest bookRequest) {
         if (bookRepository.existsByTitleIsIgnoreCaseAndAuthorIgnoreCase(bookRequest.getTitle(), bookRequest.getAuthor())) {
-            throw new BookServiceException("Book with title " + bookRequest.getTitle() + " and author "+ bookRequest.getAuthor() + " already exists");
+            return Optional.of(BookResponse.builder()
+                    .message("Book with title " + bookRequest.getTitle() + " and author " + bookRequest.getAuthor() + " already exists")
+                    .build());
         }
+        return Optional.empty();
     }
 
     @Override
     @Transactional
-    public void updateBook(Long id, BookRequest bookRequest) throws BookServiceException {
+    public BookResponse updateBook(Long id, BookRequest bookRequest) throws BookServiceException {
         Book existingBook = getBook(id);
 
         if (bookRequest.getTitle() != null && bookRequest.getAuthor() != null){
@@ -80,9 +77,9 @@ public class BookServiceImpl implements  BookService {
             existingBook.setDatePublished(bookRequest.getDatePublished());
         }
 
-        existingBook.setModifiedDate(LocalDateTime.now());
         bookRepository.save(existingBook);
 
+       return getBookResponse(existingBook);
     }
 
     @Override

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookRequest {
 
+    private String email;
     private String title;
     private String author;
     private int quantityOfBooksAvailable;

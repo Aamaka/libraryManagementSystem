@@ -19,15 +19,15 @@ public class PatronController {
     private PatronService patronService;
 
     @PostMapping
-    public ResponseEntity<?> registerPatron(@RequestBody PatronRequest patronRequest) throws PatronServiceException {
-        patronService.registerPatron(patronRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<PatronResponse> registerPatron(@RequestBody PatronRequest patronRequest) throws PatronServiceException {
+        PatronResponse patronResponse = patronService.registerPatron(patronRequest);
+        return new ResponseEntity<>(patronResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePatron(@PathVariable Long id, @RequestBody PatronRequest patronRequest) throws PatronServiceException {
-        patronService.updatePatron(id, patronRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<PatronResponse> updatePatron(@PathVariable Long id, @RequestBody PatronRequest patronRequest) throws PatronServiceException {
+        PatronResponse patronResponse = patronService.updatePatron(id, patronRequest);
+        return new ResponseEntity<>(patronResponse, HttpStatus.OK);
     }
 
     @GetMapping

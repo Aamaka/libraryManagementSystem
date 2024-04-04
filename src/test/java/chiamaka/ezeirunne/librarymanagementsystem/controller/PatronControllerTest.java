@@ -32,7 +32,8 @@ public class PatronControllerTest {
 
         PatronRequest dto = PatronRequest.
                 builder()
-                .name("Jane Amber")
+                .firstName("Jane")
+                .lastName("Amber")
                 .email("janeamber@gmail.com")
                 .phoneNumber("09087784332")
                 .gender("FEMALE")
@@ -50,7 +51,7 @@ public class PatronControllerTest {
 
         PatronRequest dto = PatronRequest.
                 builder()
-                .name("Dim Amber")
+                .firstName("Dim")
                 .build();
 
         mockMvc.perform(put("/api/patrons/1")

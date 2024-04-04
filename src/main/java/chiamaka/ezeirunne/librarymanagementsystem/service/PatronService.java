@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface PatronService {
 
-    void registerPatron(PatronRequest patronRequest) throws PatronServiceException;
-    void updatePatron(Long id, PatronRequest patronRequest) throws PatronServiceException;
+    PatronResponse registerPatron(PatronRequest patronRequest) throws PatronServiceException;
+    PatronResponse updatePatron(Long id, PatronRequest patronRequest) throws PatronServiceException;
     List<PatronResponse> getAllPatrons();
     PatronResponse getPatronById(Long id) throws PatronServiceException;
     void deletePatronById(Long id) throws PatronServiceException;

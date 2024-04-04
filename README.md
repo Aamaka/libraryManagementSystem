@@ -2,7 +2,13 @@
 
 The Library Management System is a Spring Boot application designed to facilitate the management of books, patrons, and borrowing records in a library setting. It provides RESTful endpoints for performing CRUD operations on books and patrons, as well as borrowing and returning books.
 ## Features
-
+- **User Management:**
+  - Retrieve a list of all Users
+  - Retrieve details of a specific user by ID
+  - Retrieve details of a specific user by EMAIL
+  - Add a new user to the library
+  - Update an existing user's information
+  - Remove a user from the system
 - **Book Management:**
     - Retrieve a list of all books
     - Retrieve details of a specific book by ID
@@ -15,7 +21,7 @@ The Library Management System is a Spring Boot application designed to facilitat
     - Add a new patron to the system
     - Update an existing patron's information
     - Remove a patron from the system
-- **Borrowing:**
+- **Borrowing Record Management:**
     - Allow a patron to borrow a book
     - Record the return of a borrowed book by a patron
 
@@ -24,6 +30,8 @@ The Library Management System is a Spring Boot application designed to facilitat
 - **Spring Boot**: Framework for building standalone, production-grade Spring applications.
 - **Spring Data JPA**: Simplifies the development of data access layer by providing repository support.
 - **MySQL Database**: Popular open-source relational database management system used for data storage.
+- **Spring Security**: Provides authentication, authorization, and other security features for Spring applications.
+- **JSON Web Token (JWT)**: A compact, URL-safe means of representing claims to be transferred between two parties.
 - **Git**: Version control system used for tracking changes in the project codebase and collaboration among team members.
 - **Maven**: Build automation tool for managing project dependencies and build lifecycle.
 
@@ -65,9 +73,9 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.datasource.url=jdbc:mysql://localhost:3306/libraryManagementSystem?createDatabaseIfNotExist=true
 spring.datasource.username=your_username
 spring.datasource.password=your_password
-pay_stack_initialize_url=https://api.paystack.co/transaction/initialize
-pay_stack_verification_url=https://api.paystack.co/transaction/verify/
-secretKey=your_paystack_secretKey
+application.security.jwt.secret-key=your_secret_key
+application.security.jwt.expiration=999999
+application.security.jwt.refresh-token.expiration=999999
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=create
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
@@ -79,6 +87,15 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 ## API Endpoints
 
 You can interact with the Library Management System using the following API endpoints:
+
+- **User Management Endpoints:**
+  - `POST /api/users`: Add a new user to the library
+  - `PUT /api/users/`: Update an existing user's information
+  - `GET /api/users`: Retrieve a list of all user
+  - `GET /api/users/{id}`: Retrieve details of a specific user by ID
+  - `GET /api/users/{email}`: Retrieve details of a specific user by Email
+  - `DELETE /api/users/{id}`: Remove a user from the system
+
 
 - **Book Management Endpoints:**
    - `POST /api/books`: Add a new book to the library
@@ -97,5 +114,3 @@ You can interact with the Library Management System using the following API endp
 - **Borrowing Endpoints:**
     - `POST /api/borrow/{bookId}/patron/{patronId}`: Allow a patron to borrow a book
     - `PUT /api/return/{bookId}/patron/{patronId}`: Record the return of a borrowed book by a patron
-
-To interact with these endpoints, you can use tools like cURL, Postman, or any REST client. Ensure that you have the appropriate permissions and provide valid request payloads when necessary.

@@ -21,7 +21,8 @@ public class PatronServiceTest {
     @Test
     public void testToRegisterPatron() {
         PatronRequest patronRequest = PatronRequest.builder()
-                .name("Julius Rea")
+                .firstName("Julius")
+                .lastName("Rea")
                 .email("julius@gmail.com")
                 .phoneNumber("09099433223")
                 .gender("MALE")
@@ -36,7 +37,7 @@ public class PatronServiceTest {
     @Test
     public void testToUpdatePatron() {
         PatronRequest patronRequest = PatronRequest.builder()
-                .name("Rea Julius")
+                .lastName("Julius")
                 .build();
 
         assertDoesNotThrow(() -> patronService.updatePatron(1L,patronRequest));
@@ -46,7 +47,7 @@ public class PatronServiceTest {
     @Test
     public void testToGetPatronById() throws PatronServiceException {
         PatronResponse response = patronService.getPatronById(1L);
-        assertEquals("Rea Julius", response.getName());
+        assertEquals("Julius", response.getLastName());
     }
 
 

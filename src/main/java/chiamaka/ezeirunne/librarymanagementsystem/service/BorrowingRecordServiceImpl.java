@@ -9,7 +9,6 @@ import chiamaka.ezeirunne.librarymanagementsystem.data.repository.PatronReposito
 import chiamaka.ezeirunne.librarymanagementsystem.exception.BookServiceException;
 import chiamaka.ezeirunne.librarymanagementsystem.exception.BorrowingRecordServiceException;
 import chiamaka.ezeirunne.librarymanagementsystem.exception.PatronServiceException;
-import jakarta.persistence.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +48,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
 
         book.setQuantityOfBooksAvailable(book.getQuantityOfBooksAvailable() - 1 );
-        book.setModifiedDate(LocalDateTime.now());
+
         bookRepository.save(book);
 
         borrowingRecordRepository.save(borrowingRecord);
@@ -78,7 +77,6 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
         borrowingRecord.setReturnDate(LocalDateTime.now());
 
         book.setQuantityOfBooksAvailable(book.getQuantityOfBooksAvailable() + 1);
-        book.setModifiedDate(LocalDateTime.now());
 
         bookRepository.save(book);
 
